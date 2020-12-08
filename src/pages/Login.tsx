@@ -1,4 +1,4 @@
-import React, { CSSProperties, Dispatch, FormEvent, useContext } from 'react';
+import React, { Dispatch, FormEvent, useContext } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
 import useForm from '../hooks/useForm';
@@ -8,12 +8,6 @@ import {
   AuthDispatchContext,
   AuthTypes,
 } from '../contexts/AuthProvider';
-
-const tempStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  maxWidth: '450px',
-};
 
 const Login = ({ history }: RouteComponentProps): JSX.Element => {
   const dispatch: Dispatch<AuthAction> = useContext(AuthDispatchContext);
@@ -26,13 +20,13 @@ const Login = ({ history }: RouteComponentProps): JSX.Element => {
   const onLogin = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     try {
       e.preventDefault();
-      const res: AxiosResponse<any> = await axios.post('/auth/login', {
+      const res: AxiosResponse = await axios.post('/auth/login', {
         email,
         password,
       });
       const username: string = res.data.creator_name;
-      dispatch({ type: AuthTypes.LOGIN, payload: username });
       resetValues();
+      dispatch({ type: AuthTypes.LOGIN, payload: username });
       history.push('/');
     } catch (err) {
       console.log(err.response.data.errors);
@@ -40,8 +34,8 @@ const Login = ({ history }: RouteComponentProps): JSX.Element => {
   };
 
   return (
-    <div>
-      <form onSubmit={onLogin} style={tempStyle} autoComplete='off'>
+    <div className=''>
+      <form onSubmit={onLogin} autoComplete='off'>
         <label htmlFor='email'>Email</label>
         <input
           id='email'

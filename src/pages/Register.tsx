@@ -32,7 +32,6 @@ const Register = ({ history }: RouteComponentProps): JSX.Element => {
       });
       resetValues();
       history.push('/login');
-      resetValues();
     } catch (err) {
       console.log(err.response.data.errors);
     }

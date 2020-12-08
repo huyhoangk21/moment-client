@@ -52,16 +52,19 @@ const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
   );
 
   useEffect(() => {
-    const me = async (): Promise<void> => {
+    let fetch: boolean = true;
+    const fetchMe = async (): Promise<void> => {
       try {
         const res: AxiosResponse<any> = await axios.get('/auth/me');
-        const username: string = res.data.creator_name;
-        dispatch({ type: AuthTypes.LOGIN, payload: username });
+        dispatch({ type: AuthTypes.LOGIN, payload: res.data.creator_name });
       } catch (err) {
         console.log(err);
       }
     };
-    me();
+    if (fetch) fetchMe();
+    return () => {
+      fetch = false;
+    };
   }, []);
 
   return (

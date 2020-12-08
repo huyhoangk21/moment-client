@@ -9,7 +9,7 @@ import Register from './pages/Register';
 const App = (): JSX.Element => {
   return (
     <AuthProvider>
-      <div>
+      <div className='bg-gradient-to-r from-cyan-400 to-light-blue-500 w-full min-h-screen'>
         <Switch>
           <DynamicRoute
             exact

@@ -1,4 +1,3 @@
-import { type } from 'os';
 import { ChangeEvent, useState } from 'react';
 
 type Values = {
@@ -6,6 +5,9 @@ type Values = {
   email: string;
   password: string;
   repeatPassword: string;
+  title: string;
+  selected_file: string;
+  description: string;
 };
 
 const useForm = (INTIAL_VALUES: Partial<Values>) => {
