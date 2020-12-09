@@ -9,19 +9,17 @@ import Register from './pages/Register';
 const App = (): JSX.Element => {
   return (
     <AuthProvider>
-      <div className='bg-gradient-to-r from-cyan-400 to-light-blue-500 w-full min-h-screen'>
-        <Switch>
-          <DynamicRoute
-            exact
-            path='/'
-            authenticated
-            component={Home}
-            redirectTo='/login'
-          />
-          <DynamicRoute path='/login' component={Login} redirectTo='/' />
-          <DynamicRoute path='/register' component={Register} redirectTo='/' />
-        </Switch>
-      </div>
+      <Switch>
+        <DynamicRoute
+          exact
+          path='/'
+          authenticated
+          component={Home}
+          redirectTo='/login'
+        />
+        <DynamicRoute path='/login' component={Login} redirectTo='/' />
+        <DynamicRoute path='/register' component={Register} redirectTo='/' />
+      </Switch>
     </AuthProvider>
   );
 };

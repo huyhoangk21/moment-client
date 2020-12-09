@@ -46,19 +46,16 @@ export const AuthStateContext = createContext<AuthState>(null);
 export const AuthDispatchContext = createContext<Dispatch<AuthAction>>(null);
 
 const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
-  const [state, dispatch]: [AuthState, Dispatch<AuthAction>] = useReducer(
-    reducer,
-    INITIAL_STATE
-  );
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
   useEffect(() => {
     let fetch: boolean = true;
     const fetchMe = async (): Promise<void> => {
       try {
         const res: AxiosResponse<any> = await axios.get('/auth/me');
-        dispatch({ type: AuthTypes.LOGIN, payload: res.data.creator_name });
+        dispatch({ type: AuthTypes.LOGIN, payload: res.data.username });
       } catch (err) {
-        console.log(err);
+        dispatch({ type: AuthTypes.LOGOUT });
       }
     };
     if (fetch) fetchMe();

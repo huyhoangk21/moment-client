@@ -1,53 +1,111 @@
-import React, { FormEvent } from 'react';
-import useForm from '../hooks/useForm';
+import React, { useContext, useState } from 'react';
+import { useFormik } from 'formik';
+import { AuthStateContext } from '../contexts/AuthProvider';
+import Button from './Button';
+import TextField from './TextField';
+import TextArea from './TextArea';
+import UploadSchema from '../utils/UploadSchema';
 import axios from '../api/axios';
 
 const Upload = (): JSX.Element => {
-  const [
-    { selected_file, title, description },
-    resetValues,
-    onChange,
-  ] = useForm({ selected_file: '', title: '', description: '' });
+  const { username } = useContext(AuthStateContext);
 
-  const onAddSnapshot = async (
-    e: FormEvent<HTMLFormElement>
-  ): Promise<void> => {
-    try {
-      e.preventDefault();
-      await axios.post('/snapshots', { selected_file, title, description });
-      resetValues();
-    } catch (err) {
-      console.log(err.response.data.errors);
-    }
-  };
+  const [fileBlob, setFileBlob] = useState(null);
+
+  const formik = useFormik({
+    initialValues: {
+      title: '',
+      description: '',
+      selected_file: '',
+    },
+    validateOnBlur: false,
+    validateOnChange: false,
+    validationSchema: UploadSchema,
+    onSubmit: ({ title, description }, { resetForm }) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(fileBlob);
+      reader.onloadend = async () => {
+        try {
+          await axios.post('/moments', {
+            title,
+            description,
+            selected_file: reader.result,
+          });
+        } catch (err) {
+          console.log(err.response.data.errors);
+        }
+      };
+      resetForm();
+    },
+  });
 
   return (
-    <form onSubmit={onAddSnapshot}>
-      <label htmlFor='title'>Title</label>
-      <input
+    <form
+      onSubmit={formik.handleSubmit}
+      onReset={formik.handleReset}
+      autoComplete='off'
+      className='flex flex-col w-72 absolute right-0 top-32'
+    >
+      <h2 className='text-xl text-center font-semibold'>
+        <span className='text-light-blue-500'>Share</span> your moment
+      </h2>
+      <TextField
+        id='username_upload'
+        name='username'
+        type='text'
+        disabled
+        value={username}
+        className='mt-4 mb-2'
+      />
+      <TextField
         id='title'
-        type='text'
         name='title'
-        value={title}
-        onChange={onChange}
+        type='text'
+        value={formik.values.title}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.errors.title}
+        className='mt-2 mb-2'
       />
-      <label htmlFor='description'>Description</label>
-      <input
+      <TextArea
         id='description'
-        type='text'
         name='description'
-        value={description}
-        onChange={onChange}
+        type='textarea'
+        rows='10'
+        value={formik.values.description}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.errors.description}
+        className='mt-2 mb-2'
       />
-      <label htmlFor='selected_file'>Selected_file</label>
+      <label htmlFor='selected-file' className='text-xs text-gray-500 mb-1'>
+        Add an image
+      </label>
       <input
-        id='selected_file'
-        type='text'
-        name='selected_file'
-        value={selected_file}
-        onChange={onChange}
+        type='file'
+        accept='image/*'
+        id='selected-file'
+        name='selected-file'
+        onChange={e => {
+          setFileBlob(e.target.files[0]);
+          formik.setFieldValue('selected_file', e.target.value);
+        }}
       />
-      <button type='submit'>Add snapshot</button>
+      <small className='text-red-500'>{formik.errors.selected_file}</small>
+      <Button
+        type='submit'
+        disabled={formik.isSubmitting}
+        className='my-2 bg-light-blue-500'
+      >
+        Add
+      </Button>
+      <Button
+        type='reset'
+        disabled={formik.isSubmitting}
+        className='mb-2 bg-red-500'
+      >
+        Clear
+      </Button>
     </form>
   );
 };
