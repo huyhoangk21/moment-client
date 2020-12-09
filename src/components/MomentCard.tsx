@@ -66,11 +66,12 @@ const MomentCard = ({
         </div>
         <div className='flex justify-between'>
           <p
-            className={`flex justify-center items-center text-lg ${
+            className={`flex justify-center items-center text-2xl cursor-pointer ${
               liked ? color : 'text-gray-500'
             }`}
+            onClick={likeUnlike}
           >
-            <FaHeart className='mr-2 cursor-pointer' onClick={likeUnlike} />
+            <FaHeart className='mr-2 ' />
             {likes.length}
           </p>
           {username === user.username && (
