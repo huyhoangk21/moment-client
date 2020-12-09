@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useFormik } from 'formik';
 import { AuthStateContext } from '../contexts/AuthProvider';
 import Button from './Button';
@@ -10,7 +10,7 @@ import axios from '../api/axios';
 const Upload = (): JSX.Element => {
   const { username } = useContext(AuthStateContext);
 
-  const [fileBlob, setFileBlob] = useState(null);
+  const [fileBlob, setFileBlob] = useState<null | Blob>(null);
 
   const formik = useFormik({
     initialValues: {
@@ -23,7 +23,7 @@ const Upload = (): JSX.Element => {
     validationSchema: UploadSchema,
     onSubmit: ({ title, description }, { resetForm }) => {
       const reader = new FileReader();
-      reader.readAsDataURL(fileBlob);
+      reader.readAsDataURL(fileBlob as Blob);
       reader.onloadend = async () => {
         try {
           await axios.post('/moments', {
@@ -44,7 +44,7 @@ const Upload = (): JSX.Element => {
       onSubmit={formik.handleSubmit}
       onReset={formik.handleReset}
       autoComplete='off'
-      className='flex flex-col w-72 absolute right-0 top-32'
+      className='flex flex-col w-72 fixed right-60 top-32'
     >
       <h2 className='text-xl text-center font-semibold'>
         <span className='text-light-blue-500'>Share</span> your moment
@@ -54,7 +54,7 @@ const Upload = (): JSX.Element => {
         name='username'
         type='text'
         disabled
-        value={username}
+        value={username as string}
         className='mt-4 mb-2'
       />
       <TextField

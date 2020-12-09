@@ -7,7 +7,7 @@ const UploadSchema = yup.object().shape({
     .required('Title is required'),
   description: yup
     .string()
-    .max(50, 'Description must be less than 250 characters')
+    .max(500, 'Description must be less than 500 characters')
     .required('Description is required'),
   selected_file: yup.string().required('Image is required'),
 });

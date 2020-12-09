@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch } from 'react-router-dom';
+import { Redirect, Switch } from 'react-router-dom';
 import DynamicRoute from './components/DynamicRoute';
 import AuthProvider from './contexts/AuthProvider';
 import Home from './pages/Home';
@@ -19,6 +19,7 @@ const App = (): JSX.Element => {
         />
         <DynamicRoute path='/login' component={Login} redirectTo='/' />
         <DynamicRoute path='/register' component={Register} redirectTo='/' />
+        <Redirect from='*' to='/' />
       </Switch>
     </AuthProvider>
   );
