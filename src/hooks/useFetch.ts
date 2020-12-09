@@ -1,9 +1,9 @@
 import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
+import io from 'socket.io-client';
 import axios from '../api/axios';
 import IMoment from '../interfaces/IMoment';
-
+const socket = io('http://localhost:4000');
 const useFetch = (searchTerm: string) => {
   const [moments, setMoments] = useState<IMoment[]>([]);
   const [change, setChange] = useState<boolean>(false);
@@ -19,7 +19,7 @@ const useFetch = (searchTerm: string) => {
   }, [searchTerm]);
 
   useEffect(() => {
-    const socket = io('http://localhost:4000');
+    let fetch: boolean = true;
     const fetchMoments = async (): Promise<void> => {
       try {
         let res: AxiosResponse;
@@ -33,12 +33,12 @@ const useFetch = (searchTerm: string) => {
         setMoments([]);
       }
     };
-    fetchMoments();
+    if (fetch) fetchMoments();
     socket.on('new change', () => {
-      setChange(!change);
+      if (fetch) setChange(!change);
     });
     return () => {
-      socket.disconnect();
+      fetch = false;
     };
   }, [change, debouncedSearchTerm]);
 

@@ -1,6 +1,6 @@
-import React, { InputHTMLAttributes } from 'react';
+import React, { TextareaHTMLAttributes } from 'react';
 
-interface ITextAreaProps extends InputHTMLAttributes<HTMLTextAreaElement> {
+interface ITextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string;
   error?: string;
 }

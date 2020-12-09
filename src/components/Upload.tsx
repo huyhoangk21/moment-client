@@ -9,7 +9,7 @@ import axios from '../api/axios';
 
 const Upload = (): JSX.Element => {
   const { username } = useContext(AuthStateContext);
-
+  const [error, setError] = useState<string>('');
   const [fileBlob, setFileBlob] = useState<null | Blob>(null);
 
   const formik = useFormik({
@@ -32,7 +32,7 @@ const Upload = (): JSX.Element => {
             selected_file: reader.result,
           });
         } catch (err) {
-          console.log(err.response.data.errors);
+          if (err.response.status === 413) setError('Image size too large');
         }
       };
       resetForm();
@@ -70,8 +70,7 @@ const Upload = (): JSX.Element => {
       <TextArea
         id='description'
         name='description'
-        type='textarea'
-        rows='10'
+        rows={10}
         value={formik.values.description}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
@@ -79,19 +78,22 @@ const Upload = (): JSX.Element => {
         className='mt-2 mb-2'
       />
       <label htmlFor='selected-file' className='text-xs text-gray-500 mb-1'>
-        Add an image
+        Add an image (less than 2mb)
       </label>
       <input
         type='file'
         accept='image/*'
         id='selected-file'
         name='selected-file'
+        value={formik.values.selected_file}
         onChange={e => {
           setFileBlob(e.target.files[0]);
           formik.setFieldValue('selected_file', e.target.value);
         }}
       />
-      <small className='text-red-500'>{formik.errors.selected_file}</small>
+      <small className='text-red-500'>
+        {formik.errors.selected_file || error}
+      </small>
       <Button
         type='submit'
         disabled={formik.isSubmitting}

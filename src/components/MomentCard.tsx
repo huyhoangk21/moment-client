@@ -8,6 +8,7 @@ import Button from './Button';
 
 interface IMomentCardProps extends IMoment {
   key: number;
+  color: string;
 }
 
 const MomentCard = ({
@@ -18,6 +19,7 @@ const MomentCard = ({
   selected_file,
   user,
   likes,
+  color,
 }: IMomentCardProps) => {
   const { username } = useContext(AuthStateContext);
 
@@ -49,9 +51,9 @@ const MomentCard = ({
         className='w-full h-48 object-cover'
       />
       <div className='p-5'>
-        <div className='flex justify-between text-light-blue-500'>
+        <div className={`flex justify-between ${color}`}>
           <p className='font-bold'>{user.username}</p>
-          <p>
+          <p className='font-bold'>
             {moment(
               moment(created_at).format('MMMM Do YYYY, h:mm:ss a'),
               'MMMM Do YYYY, h:mm:ss a'
@@ -63,13 +65,12 @@ const MomentCard = ({
           <p>{description}</p>
         </div>
         <div className='flex justify-between'>
-          <p className='flex justify-center items-center text-lg'>
-            <FaHeart
-              className={`mr-2 cursor-pointer ${
-                liked ? 'text-red-500' : 'text-gray-500'
-              }`}
-              onClick={likeUnlike}
-            />
+          <p
+            className={`flex justify-center items-center text-lg ${
+              liked ? color : 'text-gray-500'
+            }`}
+          >
+            <FaHeart className='mr-2 cursor-pointer' onClick={likeUnlike} />
             {likes.length}
           </p>
           {username === user.username && (
